@@ -36,3 +36,9 @@
 * Security group blocking access leads to to __timeouts__; `Connection refused` is usually caused by application/server issue
 
 * You can authorize incoming access based on client IP/port, but also based on Security Group assigned to client machine within same VPC. e.g. all machines with assigned Security Group XXX, can access my server
+
+## Networking
+
+### Public, Private IP
+
+* __Elastic IP__ is static Public IP; It's needed to be released back to pool from Networking/Elastic IP menu once it's not associated to any machine, otherwise it's still charged
