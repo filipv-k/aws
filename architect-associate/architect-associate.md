@@ -42,3 +42,28 @@
 ### Public, Private IP
 
 * __Elastic IP__ is static Public IP; It's needed to be released back to pool from Networking/Elastic IP menu once it's not associated to any machine, otherwise it's still charged
+
+## EC2 instancies
+
+__Instance Types__:
+1. General Purpose Instances
+2. Compute Optimized Instances
+3. Memory Optimized Instances
+4. Accelerated Computing Instances
+5. Storage Optimized Instances
+
+__Instance Launch Types__:
+1. On-Demand
+2. Reserved Instances
+3. Convertible Reserved Instance
+4. Scheduled Reserved
+5. Spot Instances
+   * Spot requests - One-Time / Persistent
+   * Spot Fleets  
+     * enable to define resource pools across AZ, OS, instance Types
+     * Optimizing strategies: LowestCosts, Diverse, CapacityOptimized
+7. Dedicated Hosts - with access to cores, etc. (e.g. in case you need Cores for licensing puroposes)
+8. Dedicated Instances
+
+
+
