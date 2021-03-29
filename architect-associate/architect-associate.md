@@ -69,5 +69,8 @@ __Instance Launch Types__:
 7. Dedicated Hosts - with access to cores, etc. (e.g. in case you need Cores for licensing puroposes)
 8. Dedicated Instances
 
+## AMI = Amazon Machine Image
 
-
+* AMI is region dependent
+* AMI can be public - for free or for rent via AWS Marketplace
+* AMI is persisteted in S3
