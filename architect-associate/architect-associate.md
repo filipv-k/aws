@@ -46,11 +46,15 @@
 ## EC2 instancies
 
 __Instance Types__:
-1. General Purpose Instances
-2. Compute Optimized Instances
-3. Memory Optimized Instances
-4. Accelerated Computing Instances
-5. Storage Optimized Instances
+1. __M__ "Medium" General Purpose Instances
+2. __C__ "CPU" Compute Optimized Instances
+3. __R__ "RAM" Memory Optimized Instances
+4. __G__ "GPU" Accelerated Computing Instances
+6. __I__ "IOPs" Storage Optimized Instances
+7. __T__ "BustT" Burstable general purpose instancies
+  * Burst up to capacity
+  * Umlimited burst
+  * Burst credits are obtained during low performance periods and consumed during high performance periods
 
 __Instance Launch Types__:
 1. On-Demand
