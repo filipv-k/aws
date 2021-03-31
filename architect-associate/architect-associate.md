@@ -74,3 +74,14 @@ __Instance Launch Types__:
 * AMI is region dependent
 * AMI can be public - for free or for rent via AWS Marketplace
 * AMI is persisteted in S3
+* AMI are created from existing instance 
+
+### Cross Account AMI Copy
+
+* You can share AMI with another AWS Account, and you are still the owner
+* If you copy AMi shared with you and you will become the owner of target AMI
+* __billingProduct__ = includes Windows AMI or AMI from AWS Marketplace
+* Any AMI (including AWS Marketplace) can be copied by launching an new EC2 instance and creating new image from the instance
+  * Are such a images also billed? Probably so...
+
+
