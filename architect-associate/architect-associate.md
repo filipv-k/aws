@@ -84,4 +84,29 @@ __Instance Launch Types__:
 * Any AMI (including AWS Marketplace) can be copied by launching an new EC2 instance and creating new image from the instance
   * Are such a images also billed? Probably so...
 
+### Placement Group
 
+* __Cluster__:
+  * All instancies are on the same rack (means same HW, also same AZ)
+  * Very ow latency
+  * No HA!!!
+  * Available only for expensive EC2 instancies
+*  __Spread__:
+  * Each instantce on different HW, spread accross multiple AZ
+  * Delivers HA
+  * Max 7 istancies per AZ per Placement Group
+*  __Partition__:
+  * Partition = set of racks
+  * You can create up to 7 partitions
+  * EC2 instancies access metadata - to which partition they belong to
+
+### ENI - Elastic Ntwork Interfaces
+
+* = Virtual Network Card
+* Each have: Private IPv4, One Elastic IP per private IPv4, associated security groups, MAC Address
+* You can create and re-attach (secondary IPs) them on the fly (for failover)
+* It's AZ dependent (you can pair only with EC2 within same AZ)
+
+### EC2 Hibernate
+
+* -> RAM of EC2 is dumped to EBS root memory (encryption required) and reloaded during restart -> no real stop/restart of OS
