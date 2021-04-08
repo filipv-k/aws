@@ -109,4 +109,5 @@ __Instance Launch Types__:
 
 ### EC2 Hibernate
 
-* -> RAM of EC2 is dumped to EBS root memory (encryption required) and reloaded during restart -> no real stop/restart of OS
+* -> RAM of EC2 is dumped to EBS root memory (encryption required) and reloaded during restart -> no real stop/restart of OS (uptime is being resumed, not reseted) 
+* Available only for expensive EC2 and only for Amazon Linux
