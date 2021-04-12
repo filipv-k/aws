@@ -142,3 +142,16 @@ __Instance Launch Types__:
 
 ### Gateway Load Balanced
 
+### Load Balancer Stickiness
+
+* Works for **ALB**, **CLB**
+* Same client always goes to same server
+* Implemeted via Cookie
+* Mainly for session purposes
+* * Stickiness defined on **Target Group**!
+
+## Cross-Zone Load balancing
+
+* Distribute workload across AZ
+* For **ALB**, **CLB** - free of charge
+* For **NLB** - charges for cross-AZ network traffic!
