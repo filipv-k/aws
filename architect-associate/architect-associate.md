@@ -111,3 +111,34 @@ __Instance Launch Types__:
 
 * -> RAM of EC2 is dumped to EBS root memory (encryption required) and reloaded during restart -> no real stop/restart of OS (uptime is being resumed, not reseted) 
 * Available only for expensive EC2 and only for Amazon Linux
+
+## Load Balancing
+
+### Classic Load Banancer
+
+* ...
+
+### ALB Application Load Balancer
+
+* Provides load balancing on Layer 7
+* Good for applications on Docker/ECS, because of Port support (can address more app instancies on same IP)
+* Routing to __Target Groups__
+  * Private IP
+  * EC2 instancies (can be managed by Auto Scaling Groups)
+  * ECS tasks
+  * Lambda functions
+* Routing table based on Domain, part of URL, Query String, Headers
+* Default __Round Robin__ routing
+* ALB is forwarding requests - True IP of client in Header **X-Forwarde-For**, **X-Forwarded-Port**, **X-Forwarded-Proto**
+* Performance ~ 400 ms
+* Have hostname, not static IP
+
+### NLB Network Load Balancer
+
+* Works on Layer 7 (TCP, UDP)
+* Very performent: ~100 ms 
+* NLB one static IP per AZ
+* NLB does not forward, but acts as a network router!
+
+### Gateway Load Balanced
+
