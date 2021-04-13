@@ -155,3 +155,18 @@ __Instance Launch Types__:
 * Distribute workload across AZ
 * For **ALB**, **CLB** - free of charge
 * For **NLB** - charges for cross-AZ network traffic!
+
+## SSL/TLS
+
+### SNI Server Name Indication
+
+* Allows to run HTTPS connections for multiple domains on single Load Balancer instance (usually mapping between certificates and domains based on hostname (SNI) in request)
+* Works for ALB, NLB, CloudFront (not for CLB)
+
+### Connection Draining
+
+* For **CLB**: __Connection Draining__
+* For **ALB, NLB**: __Deregistration Delay__
+* == __Time to complete already open connection without sending new request to draining machine__
+* Default 300 seconds, can be set between 1 - 3600 seconds
+* 
