@@ -279,6 +279,7 @@ __Latency Routing Policy__: To target with lowest latency; Latency is measured f
 * S3 One Zone IA (lower avaiability and reability), retrival fee per GB
 * S3 Intelligent Tiering - monthly re-sync between Standard and IA, retrival fee per GB
 * S3 Glacier = Archive; Retrivals: Expedited <5 minutes; Standard < 5 hours; Bulk < 12 hours; Minumum storage 90 days, retrival fee per GB
+  * cannot directly import data from Snowball (use S3 Standard and lifecycle policy)
 * S3 Deep Archive - Retrivals Standard < 12 hours, Bulk < 48 hours; minimum storage 180 days, retrival fee per GB
 
 ### S3 Lifecycle Rules
@@ -323,6 +324,57 @@ __Latency Routing Policy__: To target with lowest latency; Latency is measured f
 
 * Default region: `us-east-1`
 
+## CloudFront
+
+* CDN network; caches HTTP requests; forwards request to target via AWS private network
+* Origin (underlying real resource): S3 or HTTP endpoint (including S3 webiste)
+* __Origin Access Policy__ = CloudFront is authorized to access private resources - only for S3
+  * make sure you disable direct access to make it working
+  * 3 hours needed to populate DNS
+* For HTTP endpoints security groups are used to protect orginal resource (whitelist all CloudFront IPs)
+* __Geo Restriction__: Whitelist/blacklist based on IP origin
+* __Signed URL__
+  * Allows access to single file
+  * Allows access to a path (any orginal)
+  * Compare to S3 pre-signed, where IAM of creator are inherited
+* __Signed Cookie__
+  * Allows access to many files
+* Pricing depends on location; more traffic makes better price
+  * Price classess: (1) All locations (2) Price Class 200: excludes most expensive regions (3) Price class 100: only cheap regions
+* __Origin based routing__ = different locations per URL path
+* __Origin Groups__ = increate HA and failover; consists of one primary and one secondary
+* __Field Level Encryption__ = Particular fields in HTTP Post can be enctrypted between Edge Location and target resource (e.g. Credit Card number)
+  
+## AWS Global Accelerator
+
+* Use Anycast IP
+* multiple Edge Locations have same IP, traffic is always routed through the closest one
+* health-checks and failover
+* Good for gaming, VoIP
+
+## AWS Stogare Gateway
+
+* Connect OnPrem and AWS
+* __File Gateway__: Expose S3 as Samba or NFS to Onprem
+* __Volume Gateway__: iSCI protocol; backing on volumes from OnPrem
+* __Type Gateway__: iSCI protocol; Moving data from types to S3/Glacier
+
+## File Systems
+
+* __EFS__ = Elastic File System
+* __FSx for Windows__ = Fully managed Windows file system
+  * Supports SAMBA and NTFS, Active Directory, ACL
+  * Multi AZ, HA, backed to S3
+* __FSx for Lustre__
+  * distributed, parallezed
+  * Seamless integration with S3 (read/write)
+  * Good for HPC (high Performance Computing, like video processing, financial modelling, electronic design)
+* Scratch File system = for temporar storage
+* Persistent File System = long term
+
+## AWS Transport Family
+
+* Enables FTP, sFTP transfer of data to/out S3 or NFS
 
 ## Other Resources
 
