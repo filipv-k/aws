@@ -9,6 +9,8 @@
 * __Resources__
   * Prevent users to access non-authorized resources
 
+* __AWS Policy Simulator__ - test your settings
+
 ### Hints
 
 * Always delete Root Access keys and enable MFA for root user
@@ -16,7 +18,9 @@
 
 ## EC2
 
-= Elastic Cloud Computing
+* = Elastic Cloud Computing
+* __EC2 Instance Metadata__: Learn about themsevels without using IAM role
+  * from internal IP: <http://169.254.169.254/latest/meta-data/> (but not any IAM role)
 
 ### SSH to EC2 machines
 
@@ -161,6 +165,164 @@ __Latency Routing Policy__: To target with lowest latency; Latency is measured f
 * Route 53 is also domain registrator;
 * But DNS is different from Registrar, even if offered within same service
 * You can use also Route53 with another Registrar; you need to enter AWS nameservers into your domain entry
+
+## Solution Architecture
+
+### Well Architecture Framework
+
+* Operational Excelence, Performance, Security, Reliability, Costs
+
+### Speed-up EC2 instancines start
+
+* __Golden AMI__ - all prepared app image
+* __Bootstrap with User Data__: slower
+* __Hybrid__: Golden AMI + User Data script to load some dynamic variables (URL, config, etc.)
+* RDS/EBS Volume snapspots
+
+### ElasticBeanStalk
+
+* free, pay only for underlying instancies
+* It's Contious Delivery Service
+* Automated deployment and configuration
+
+
+## S3
+
+* Simple Storage Service
+* Bucket = Directory
+* Object = File
+* Address: s3://bucket/object
+* object consists of Full Key = Prefix + file key
+* There is no directory hierarchy, only looks like it is
+* S3 is region level (But console is global)
+* Max 5TB object size
+* Max 5GB upload size -> Multi-upload; recomended for > 100MB
+* __Requestor Pays__ = Setting when downloader payes for corresponding networking costs (must be signed in AWS)
+
+### S3 Versioning
+
+* Defined on Bucket level
+* NULL value for non versioned version of the file
+* `Deletion Marker` instead of deletion; Deletion of `Deletion Marker` is pernament deletion
+
+### S3 Encryption
+
+* __SSE-S3__ Managed by S3
+  * Server Side encryption
+  * Set by header during upload
+* __SSE-KMS__ Managed by KMS
+  * Server Side encryption
+  * Set by header during upload
+* __SSE-C__ Custom managed keys
+  * Server Side encryption
+  * Set by header during upload
+  * Key is always passed in header of all https requests
+  * HTTPS is mandatory because requests contains encryption key
+* __Client Side Entryption__
+  * Fully managed by the client (with support of e.g. S3 Enctryption Library)
+  * Not visible on AWS side, as AWS is not aware at all about such a encryption
+
+* Default specified on bucket level
+* Each obejct can have specific settings
+
+### S3 Security
+
+* __User Based__: Through AIM settings
+* __Resource Based__
+  * __S3 Bucket Policies__: bucket wide-rules from S3 Console, allows cross-account
+    * Used to grant public access; force encryption; grant cross-account access 
+  * __Object ACL__: fine grain
+  * __Bucket ACL__: less common
+* Access granted if allowed by IAM or by S3 policy; if ther is explicit DENY in IAM, there is not access
+* MFA can be required for deletion 
+* __Pre-Signed URLs__
+  * URL valid only for limited time (e.g. download premium video for signed user)
+  * Can be generated in CLI, SDK
+  * Default 1 hour
+  * Auth. are inherited from granting user
+  * `aws s3 presign <object> <region> <expoiration>`
+* Strong (ACID) consistency for file upload, listing, access, etc.
+* Only Bucket owner can enable/disable option `MFA-Delete`, this can done only via CLI
+* __S3 Lock__ & __Glacier Vault Lock__
+  * Adopts WORM = Write Once Ready Many
+  * The lock and the corresponding policy cannot be removed - good for compliance reasons
+  * For S3 lock you need to: (1) Enable versioning (2) define __Retention Policy__ or set __Legal Hold__ (no expiration)
+  * __Governance Mode__ = special auth. required to change settings
+  * __Compliance Mode__ = not possible to change including root aws user (!)
+
+### S3 Logging
+
+* Never set your logging bucket (log storage) as monitored bucket (relevant for logging) -> it's infinite loop and creates huge data-volume
+* By enable logging the log-storage buckget get automatically updated with write auth. for log develivery group
+* Logs can be analyzed by Athena
+
+### S3 Replicattion
+
+* __CRR__ = Cross Region Replication
+  * Compliance
+  * Low latency
+* __SRR__ = Same Region Replication
+  * Log aggregration
+  * Copy data to test/dev
+* Must enable versioning, both source & target; Replication includes same object ID
+* Can be between different accounts
+* IAM write role to target bucket need to be provided
+* Only new objects (after enablement) are replicated
+* Deletion is not replicated; `Delete Marker` can be replicated
+* There is no replication chainig - object can be replicated only once (WHY?)
+
+### S3 Classess
+
+* All classess can be used within one bucket
+* S3 Standard
+* S3 Standard-IA (lower garanteed avaiablity), retrival fee per GB
+* S3 One Zone IA (lower avaiability and reability), retrival fee per GB
+* S3 Intelligent Tiering - monthly re-sync between Standard and IA, retrival fee per GB
+* S3 Glacier = Archive; Retrivals: Expedited <5 minutes; Standard < 5 hours; Bulk < 12 hours; Minumum storage 90 days, retrival fee per GB
+* S3 Deep Archive - Retrivals Standard < 12 hours, Bulk < 48 hours; minimum storage 180 days, retrival fee per GB
+
+### S3 Lifecycle Rules
+
+* Objects can be moved between storage classes (e.g. move to IA after 60 days, move to Glacier after 180 days, etc.0)
+* Can be also used to delete files, including individual versions OR clean-up multipart upload
+* Moving is different from restoring!
+* Can be assign based on prefix or tag
+* Rules can target current or previous verions of object
+* __S3 Analyics__ to improve your livecycle rules
+
+### S3 Performance
+
+* Very hight, granted per prefix
+* If SSE-KMS used, there is performance limitation inherited from KMS (number of requests per second)
+* Use AWS Edge Location (compatible with multi-upload)
+
+## S3 Select & GLacier Select
+
+* Limit data by server-side filtering (e.g. filter CSV file)
+* Only simple queries = filter rows & columns
+* Save network transfer, client side CPU
+
+## S3 Event notification
+
+* need to enable versioning to work properly
+* You can sent notification to SNS, SQS, Lamdba
+* Add access policy allowing S3 bucket to write to notified service
+
+### Static websites
+
+* Enabled by Console settings
+* If part of embedded website - must be enabled by specif CORS policy (JSON)
+* S3 BYte-Range Fetches = multiple Get request per byte range
+
+## Athena
+
+* Serveless analytics against S3 files
+* Pricing per query and scanned data
+
+### AWS CLI
+
+* Default region: `us-east-1`
+
 
 ## Other Resources
 
